@@ -19,7 +19,7 @@ public static void SalvarProdutos(List<Produto> produtos)
 public static List<Produto> CarregarProdutos() {
     List<Produto> produtos = new List<Produto>();
 
-    if (!File.Exists("Data/produtos.txt"))
+    if (File.Exists("Data/produtos.txt"))
         return produtos;
 
     foreach (var linha in File.ReadAllLines("Data/produtos.txt")) {
