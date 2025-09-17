@@ -75,8 +75,9 @@ class Program
                 int.Parse(partes[3]),
                 decimal.Parse(partes[4])
             );
+            produtos.Add(p);
         }
-        produtos.Add(p);
+        return produtos;
     }
     //              SALVAR VENDAS
     public static void SalvarVendas(List<Venda> vendas)
@@ -108,7 +109,7 @@ class Program
             v.QuantidadeVendida = int.Parse(partes[3]);
             v.ValorTotal = double.Parse(partes[4]);
             v.DataVenda = DateTime.Parse(partes[5]);
-            produtos.Add(v);
+            vendas.Add(v);
         }
         return vendas;
     }
@@ -163,24 +164,118 @@ class Program
             Console.Write("Digite o valor: ");
         }
 
-        Produto novoProduto = new Produto(id, nome, categoria, quantidade, preco)
-     
+        Produto novoProduto = new Produto(id, nome, categoria, quantidade, preco);
         produtos.Add(novoProduto);
 
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("Produto adicionado com sucesso!");
         Console.ResetColor();
+        SalvarProdutos();
     }
 
-    public static List<Produto> ConsultarProdutos() { }
+    public static List<Produto> ConsultarProdutos()
+    {
+        Console.WriteLine("\n--- Consulta de Produtos ---");
+        if (produtos.Count == 0)
+        {
+            Console.WriteLine("Nenhum produto cadastrado.");
+            return produtos;
+        }
 
-    public static void ExcluirProdutos() { }
+        foreach (var p in produtos)
+        {
+            Console.WriteLine($"\nId: {p.Id}");
+            Console.WriteLine($"Nome: {p.Nome}");
+            Console.WriteLine($"Categoria: {p.Categoria}");
+            Console.WriteLine($"Quantidade: {p.Quantidade}");
+            Console.WriteLine($"Preço: {p.Preco}");
+            Console.WriteLine("---------------------------------");
+        }
+    }
+          
+    public static void ExcluirProdutos()
+    {
+        Console.WriteLine("\n--- Excluir Produto ---");
+        Console.WriteLine("Digite o Id do produto que deseja excluir: ");
+        if (!int.TryParse(Console.ReadLine(), out int idParaExcluir))
+        {
+            Console.WriteLine("Id inválido.");
+            return;
+        }
+
+        int index = produtos.FindIndex(p => p.Id == idParaExcluir);
+        if (index != -1)
+        {
+            produtos.RemoveAt(index);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Produto excluído com sucesso!");
+            Console.ResetColor();
+            SalvarProdutos(produtos);
+        }
+        else
+        {
+            Console.WriteLine("Produto não encontrado.");
+        }
+
+    }
 
 
-    public void realizarVenda() { }
+    public void realizarVenda()
+    {
+        Console.WriteLine("\n--- Realizar Venda ---");
+        Console.WriteLine("Digite o Id do produto para a venda: ");
+        if (!int.TryParse(Console.ReadLine(), out int idVenda))
+        {
+            Console.WriteLine("Id inválido.");
+            return;
+        }
 
-    //CAMADA DE INTERFACE
-    static void Main(string[] args)
+        int index = produtos.FindIndex(p => p.Id == idVenda);
+        if (index != -1) 
+        {
+            Console.WriteLine("Produto não encontrado.");
+            return;
+        }
+
+        Produto produtoParaVenda = produtos[index];
+        Console.WriteLine($"\nProduto selecionado: {produtoParaVenda.Nome}");
+        Console.WriteLine("Digite a quantidade a ser vendida: ");
+        if (!int.TryParse(Console.ReadLine(), out int quantidadeVendida) || quantidadeVendida <= 0)
+        {
+            Console.WriteLine("Quantidade inválida.");
+            return;
+        }
+
+        if (quantidadeVendida > produtoParaVenda.Quantidade)
+        {
+            Console.WriteLine("Quantidade insuficiente em estoque.");
+            return;
+        }
+
+        produtoParaVenda.Quantidade -= quantidadeVendida;
+        produtos[index] = produtoParaVenda;
+
+        double valorTotalVenda = (double)produtoParaVenda.Preco * quantidadeVenda;
+        Venda novaVenda = new Venda
+        {
+            IdVenda = vendas.Count > 0 ? vendas.Max(v => v.IdVenda) + 1 : 1,
+            NomeProduto = produtoParaVenda.Nome,
+            Categoria = produtoParaVenda.Categoria,
+            QuantidadeVendida = quantidadeVendida,
+            ValorTotal = valorTotalVenda,
+            DataVenda = DateTime.Now
+        };
+        vendas.Add(novaVenda);
+
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("Venda realizada com sucesso!");
+        Console.ResetColor();
+
+        SalvarProdutos();
+        SalvarVendas();
+
+        //CAMADA DE INTERFACE
+        static void Main(string[] args)
     {
         produtos = CarregarProdutos();
         vendas = CarregarVendas();
@@ -203,7 +298,7 @@ class Program
 
             switch (opcao)
             {
-                case "1": CadastrarProduto(produtos); break;
+                case "1": CadastrarProduto(); break;
                 case "2": /* RealizarVenda(produtos, vendas) */ break;
                 case "3": /* ConsultarProduto(produtos) */ break;
                 case "4": /* ExcluirProduto(produtos) */ break;
