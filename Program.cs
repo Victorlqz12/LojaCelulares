@@ -45,7 +45,7 @@ class Program
 
     //          CAMADA DE PERSISTÊNCIA (MANIPULAÇÃO DE ARQUIVOS)
     //               SALVAR PRODUTOS 
-    public static void SalvarProdutos(List<Produto> produtos)
+    public static void SalvarProdutos()
     {
         Directory.CreateDirectory("Data");
         using (StreamWriter sw = new StreamWriter("Data/produtos.txt"))
@@ -53,6 +53,18 @@ class Program
             foreach (var p in produtos)
             {
                 sw.WriteLine($"{p.Id};{p.Nome};{p.Categoria};{p.Quantidade};{p.Preco}");
+            }
+        }
+    }
+
+    public static void SalvarVendas()
+    {
+        Directory.CreateDirectory("Data");
+        using (StreamWriter sw = new StreamWriter("Data/vendas.txt"))
+        {
+            foreach (var v in vendas)
+            {
+                sw.WriteLine($"{v.IdVenda};{v.NomeProduto};{v.Categoria};{v.QuantidadeVendida};{v.ValorTotal};{v.DataVenda}");
             }
         }
     }
@@ -79,18 +91,7 @@ class Program
         }
         return produtos;
     }
-    //              SALVAR VENDAS
-    public static void SalvarVendas(List<Venda> vendas)
-    {
-        Directory.CreateDirectory("Data");
-        using (StreamWriter sw = new StreamWriter("Data/vendas.txt"))
-        {
-            foreach (var v in vendas)
-            {
-                sw.WriteLine($"{v.IdVenda};{v.NomeProduto};{v.Categoria};{v.QuantidadeVendida};{v.ValorTotal};{v.DataVenda}");
-            }
-        }
-    }
+    
     //              CARREGAR VENDAS
     public static List<Venda> CarregarVendas()
     {
@@ -99,7 +100,7 @@ class Program
         if (!File.Exists("Data/vendas.txt"))
             return vendas;
 
-        foreach (var linha in File.ReadAllLines("Data/produtos.txt"))
+        foreach (var linha in File.ReadAllLines("Data/vendas.txt"))
         {
             var partes = linha.Split(';');
             Venda v = new Venda();
@@ -173,13 +174,13 @@ class Program
         SalvarProdutos();
     }
 
-    public static List<Produto> ConsultarProdutos()
+    public static void ConsultarProdutos()
     {
         Console.WriteLine("\n--- Consulta de Produtos ---");
         if (produtos.Count == 0)
         {
             Console.WriteLine("Nenhum produto cadastrado.");
-            return produtos;
+            return;
         }
 
         foreach (var p in produtos)
@@ -210,7 +211,7 @@ class Program
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Produto excluído com sucesso!");
             Console.ResetColor();
-            SalvarProdutos(produtos);
+            SalvarProdutos();
         }
         else
         {
@@ -220,7 +221,7 @@ class Program
     }
 
 
-    public void realizarVenda()
+    public static void RealizarVenda()
     {
         Console.WriteLine("\n--- Realizar Venda ---");
         Console.WriteLine("Digite o Id do produto para a venda: ");
@@ -231,7 +232,7 @@ class Program
         }
 
         int index = produtos.FindIndex(p => p.Id == idVenda);
-        if (index != -1) 
+        if (index == -1)
         {
             Console.WriteLine("Produto não encontrado.");
             return;
@@ -255,7 +256,7 @@ class Program
         produtoParaVenda.Quantidade -= quantidadeVendida;
         produtos[index] = produtoParaVenda;
 
-        double valorTotalVenda = (double)produtoParaVenda.Preco * quantidadeVenda;
+        double valorTotalVenda = (double)produtoParaVenda.Preco * quantidadeVendida;
         Venda novaVenda = new Venda
         {
             IdVenda = vendas.Count > 0 ? vendas.Max(v => v.IdVenda) + 1 : 1,
@@ -269,10 +270,28 @@ class Program
 
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("Venda realizada com sucesso!");
-        Console.ResetColor();
+        Console.ResetColor();             
+    }
 
-        SalvarProdutos();
-        SalvarVendas();
+    public static void GerarRelatoriosDeVendas()
+    {
+        Console.WriteLine("\n--- Relatório de Vendas ---");
+        if (vendas.Count == 0)
+        {
+            Console.WriteLine("Nenhuma venda registrada.");
+            return;
+        }
+        foreach (var v in vendas)
+        {
+            Console.WriteLine($"\nId Venda: {v.IdVenda}");
+            Console.WriteLine($"Produto: {v.NomeProduto}");
+            Console.WriteLine($"Categoria: {v.Categoria}");
+            Console.WriteLine($"Quantidade Vendida: {v.QuantidadeVendida}");
+            Console.WriteLine($"Valor Total: {v.ValorTotal}");
+            Console.WriteLine($"Data da Venda: {v.DataVenda}");
+            Console.WriteLine("---------------------------------");
+        }
+    }
 
         //CAMADA DE INTERFACE
         static void Main(string[] args)
@@ -293,18 +312,24 @@ class Program
             Console.WriteLine("5 - Relatorio de Vendas");
             Console.WriteLine("0 - Sair");
 
-            Console.WriteLine("Escolha: ");
+            Console.WriteLine("Escolha uma opção: ");
             string opcao = Console.ReadLine();
 
             switch (opcao)
             {
                 case "1": CadastrarProduto(); break;
-                case "2": /* RealizarVenda(produtos, vendas) */ break;
-                case "3": /* ConsultarProduto(produtos) */ break;
-                case "4": /* ExcluirProduto(produtos) */ break;
-                case "5": /* GerarRelatorios(vendas) */ break;
-                case "0": return;
-                default: Console.WriteLine("Opção inválida"); break;
+                case "2": RealizarVenda(); break;
+                case "3": ConsultarProdutos(); break;
+                case "4": ExcluirProdutos(); break;
+                case "5": GerarRelatoriosDeVendas(); break;
+                case "0":
+                    Console.WriteLine("\nSaindo da aplicação...");
+                    return;
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Opção inválida. Tente novamente.");
+                    Console.ResetColor();
+                    break;
             }
             Console.WriteLine("Pressione uma tecla para continuar...");
             Console.ReadKey();
