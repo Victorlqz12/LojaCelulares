@@ -56,7 +56,7 @@ class Program
             }
         }
     }
-
+    //               SALVAR VENDAS 
     public static void SalvarVendas()
     {
         Directory.CreateDirectory("Data");
@@ -152,70 +152,93 @@ class Program
         int id;
         while (true) //Loop para garantir que só irá dar continuidade com uma entrada válida ou com cancelamento
         {
-            input = LerEntrada(" Digite o Id do produto: ");
+            input = LerEntrada("\n    Digite o Id do produto: ");
             if (input == null) return;
 
             if (int.TryParse(input, out id) && id >= 0) //Caso a entrada seja válida
             {
                 break;
             }
-            Console.WriteLine(" Id inválido. Por favor, é necessário digitar um número inteiro positivo.");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("    Id inválido. Por favor, é necessário digitar um número inteiro positivo.");
+            Console.ResetColor();
         }
         string nome;
         while (true)
         {
-            nome = LerEntrada(" Digite o nome do produto: ");
+            nome = LerEntrada("\n    Digite o nome do produto: ");
             if (nome == null) return;
 
             if (!string.IsNullOrWhiteSpace(nome))
             {
                 break; 
             }
-            Console.WriteLine(" Nome inválido!");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("    Nome inválido!");
+            Console.ResetColor();
         }
         string categoria;
         while (true)
         {
-            categoria = LerEntrada(" Digite a categoria do produto: ");
-            if (categoria == null) return;
+            Console.WriteLine("\n    Selecione a categoria:");
+            Console.WriteLine("          1 - Celular");
+            Console.WriteLine("          2 - Acessorios");
+            string escolha = LerEntrada("    Digite o número da opção desejada: ");
 
-            if (!string.IsNullOrWhiteSpace(categoria))
+            if (escolha == null) return; 
+
+            if (escolha.Trim() == "1")
             {
-                break;  
+                categoria = "celular";
+                break;
             }
-            Console.WriteLine(" Categoria inválida!");
+            else if (escolha.Trim() == "2")
+            {
+                categoria = "acessorios";
+                break;
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("     Opção inválida! Por favor, digite 1 ou 2.");
+                Console.ResetColor();
+            }
         }
         int quantidade;
         while (true) 
         {
-            input = LerEntrada(" Digite a quantidade de produtos: ");
+            input = LerEntrada("\n    Digite a quantidade de produtos: ");
             if (input == null) return; 
 
             if (int.TryParse(input, out quantidade) && quantidade >= 0)
             {
                 break; 
             }
-            Console.WriteLine(" Quantidade inválida. Por favor, é necessário digitar um número inteiro positivo.");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("     Quantidade inválida. Por favor, é necessário digitar um número inteiro positivo.");
+            Console.ResetColor();
         }
 
         decimal preco;
         while (true)
         {
-            input = LerEntrada(" Digite o valor (ex: 19,99): ");
+            input = LerEntrada("\n    Digite o valor (ex: 19,99): ");
             if (input == null) return;
 
             if (decimal.TryParse(input, NumberStyles.Any, CultureInfo.CurrentCulture, out preco) && preco >= 0)
             {
                 break;
             }
-            Console.WriteLine(" Valor inválido. Por favor, é necessário digitar um número positivo.");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("    Valor inválido. Por favor, é necessário digitar um número positivo.");
+            Console.ResetColor();
         }
 
         Produto novoProduto = new Produto(id, nome, categoria, quantidade, preco);
         produtos.Add(novoProduto);
 
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine(" Produto adicionado com sucesso!");
+        Console.WriteLine("     Produto adicionado com sucesso!");
         Console.ResetColor();
         SalvarProdutos();
     }
