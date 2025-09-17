@@ -126,9 +126,9 @@ class Program
         if (input.ToLower().Trim() == "cancelar")
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\nOperação cancelada pelo usuário.");
+            Console.WriteLine("\n   Operação cancelada pelo usuário.");
             Console.ResetColor();
-            Console.WriteLine("Pressione qualquer tecla para continuar...");
+            Console.WriteLine("     Pressione qualquer tecla para continuar...");
             Console.ReadKey();
             return null;
         }
@@ -150,19 +150,17 @@ class Program
         string input;
 
         int id;
-        while (true) //Loop para garantir que só irá dar continuidade com uma entrada válida ou com cancelamento
+        if (produtos.Count == 0)
         {
-            input = LerEntrada("\n    Digite o Id do produto: ");
-            if (input == null) return;
-
-            if (int.TryParse(input, out id) && id >= 0) //Caso a entrada seja válida
-            {
-                break;
-            }
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("    Id inválido. Por favor, é necessário digitar um número inteiro positivo.");
-            Console.ResetColor();
+            id = 1;
         }
+        else
+        {
+            id = produtos.Max(p => p.Id) + 1; 
+        }
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine($"\n    O Id do produto foi gerado automaticamente: {id}");
+        Console.ResetColor();
         string nome;
         while (true)
         {
