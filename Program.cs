@@ -120,9 +120,16 @@ class Program
 //              MANIPULAAÇÃO DE PRODUTOS
     public static void CadastrarProduto() 
     {
-        Console.WriteLine("\n--- Adicionando Novo Produto ---");
-        int id;
-        Console.Write("Digite o Id do produto: ");
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("╔════════════════════════════════════════════════════════════════════════╗");
+        Console.WriteLine("║                        LOJA CELULARXPRESS                              ║");
+        Console.WriteLine("║                        Cadastro de Produto                             ║");
+        Console.WriteLine("╠════════════════════════════════════════════════════════════════════════╣");
+        Console.ResetColor();
+
+        Console.Write("\n  Digite o Id do produto: ");
+        int id;        
         while (!int.TryParse(Console.ReadLine(), out id) || id < 0) //Valida se o valor é um int
     {
         Console.WriteLine("Id inválido. Por favor, é necessário digitar um número inteiro positivo.");
@@ -146,7 +153,7 @@ class Program
         {
             Console.WriteLine("Categoria inválida!.");
             Console.Write("Digite novamente a categoria do produto: ");
-            nome = Console.ReadLine();
+            categoria = Console.ReadLine();
         }
 
         int quantidade;
@@ -176,31 +183,52 @@ class Program
 
     public static void ConsultarProdutos()
     {
-        Console.WriteLine("\n--- Consulta de Produtos ---");
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("╔════════════════════════════════════════════════════════════════════════╗");
+        Console.WriteLine("║                        LOJA CELULARXPRESS                              ║");
+        Console.WriteLine("║                        Consulta de Produtos                            ║");
+        Console.WriteLine("╠════════════════════════════════════════════════════════════════════════╣");
+        Console.ResetColor();
+
         if (produtos.Count == 0)
         {
-            Console.WriteLine("Nenhum produto cadastrado.");
+            Console.WriteLine("\n    Nenhum produto cadastrado.");
             return;
         }
 
         foreach (var p in produtos)
         {
-            Console.WriteLine($"\nId: {p.Id}");
-            Console.WriteLine($"Nome: {p.Nome}");
-            Console.WriteLine($"Categoria: {p.Categoria}");
-            Console.WriteLine($"Quantidade: {p.Quantidade}");
-            Console.WriteLine($"Preço: {p.Preco}");
-            Console.WriteLine("---------------------------------");
+            Console.WriteLine("\n   ----------------------------------------");
+            Console.WriteLine($"    Id: {p.Id}");
+            Console.WriteLine($"    Nome: {p.Nome}");
+            Console.WriteLine($"    Categoria: {p.Categoria}");
+            Console.WriteLine($"    Quantidade: {p.Quantidade}");
+            Console.WriteLine($"    Preço: {p.Preco:C}");
+            Console.WriteLine("   ---------------------------------------");
         }
+
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("╚════════════════════════════════════════════════════════════════════════╝");
+        Console.ResetColor();
     }
           
     public static void ExcluirProdutos()
     {
-        Console.WriteLine("\n--- Excluir Produto ---");
-        Console.WriteLine("Digite o Id do produto que deseja excluir: ");
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("╔════════════════════════════════════════════════════════════════════════╗");
+        Console.WriteLine("║                        LOJA CELULARXPRESS                              ║");
+        Console.WriteLine("║                        Excluir Produto                                 ║");
+        Console.WriteLine("╠════════════════════════════════════════════════════════════════════════╣");
+        Console.ResetColor();
+
+        Console.WriteLine("\n   Digite o Id do produto que deseja excluir: ");
         if (!int.TryParse(Console.ReadLine(), out int idParaExcluir))
         {
-            Console.WriteLine("Id inválido.");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\n   ❌ Id inválido. Por favor, digite um número.");
+            Console.ResetColor();
             return;
         }
 
@@ -209,13 +237,15 @@ class Program
         {
             produtos.RemoveAt(index);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Produto excluído com sucesso!");
+            Console.WriteLine("\n   ✔ Produto excluído com sucesso!");
             Console.ResetColor();
             SalvarProdutos();
         }
         else
         {
-            Console.WriteLine("Produto não encontrado.");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\n   ❌ Produto não encontrado.");
+            Console.ResetColor();
         }
 
     }
@@ -223,33 +253,51 @@ class Program
 
     public static void RealizarVenda()
     {
-        Console.WriteLine("\n--- Realizar Venda ---");
-        Console.WriteLine("Digite o Id do produto para a venda: ");
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("╔════════════════════════════════════════════════════════════════════════╗");
+        Console.WriteLine("║                        LOJA CELULARXPRESS                              ║");
+        Console.WriteLine("║                         Realizar Venda                                 ║");
+        Console.WriteLine("╠════════════════════════════════════════════════════════════════════════╣");
+        Console.ResetColor();
+
+        Console.WriteLine("\n   Digite o Id do produto para a venda: ");
         if (!int.TryParse(Console.ReadLine(), out int idVenda))
         {
-            Console.WriteLine("Id inválido.");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\n   ❌ Id inválido. Por favor, digite um número.");
+            Console.ResetColor();
             return;
         }
 
         int index = produtos.FindIndex(p => p.Id == idVenda);
         if (index == -1)
         {
-            Console.WriteLine("Produto não encontrado.");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\n   ❌ Produto não encontrado.");
+            Console.ResetColor();
             return;
         }
 
         Produto produtoParaVenda = produtos[index];
-        Console.WriteLine($"\nProduto selecionado: {produtoParaVenda.Nome}");
-        Console.WriteLine("Digite a quantidade a ser vendida: ");
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine($"\n   Produto selecionado: {produtoParaVenda.Nome} | Estoque disponível: {produtoParaVenda.Quantidade}");
+        Console.ResetColor();
+
+        Console.WriteLine("\n   Digite a quantidade a ser vendida: ");
         if (!int.TryParse(Console.ReadLine(), out int quantidadeVendida) || quantidadeVendida <= 0)
         {
-            Console.WriteLine("Quantidade inválida.");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\n   ❌ Quantidade inválida. Por favor, digite um número inteiro positivo.");
+            Console.ResetColor();
             return;
         }
 
         if (quantidadeVendida > produtoParaVenda.Quantidade)
         {
-            Console.WriteLine("Quantidade insuficiente em estoque.");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\n   ⚠️ Quantidade insuficiente em estoque.");
+            Console.ResetColor();
             return;
         }
 
@@ -269,8 +317,12 @@ class Program
         vendas.Add(novaVenda);
 
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Venda realizada com sucesso!");
-        Console.ResetColor();             
+        Console.WriteLine("\n   ✔ Venda realizada com sucesso!");
+        Console.WriteLine($"   Valor total da venda: {valorTotalVenda:C}");
+        Console.ResetColor();
+
+        SalvarProdutos();
+        SalvarVendas();
     }
 
     public static void GerarRelatoriosDeVendas()
@@ -302,18 +354,32 @@ class Program
         while (true)
         {
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("=== LOJA CELULARXPRESS === ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("╔════════════════════════════════════════════════════════════════════════╗");
+            Console.WriteLine("║                                                                        ║");
+            Console.WriteLine("║                        LOJA CELULARXPRESS                              ║");
+            Console.WriteLine("║                          Menu Principal                                ║");
+            Console.WriteLine("║                                                                        ║");
+            Console.WriteLine("╠════════════════════════════════════════════════════════════════════════╣");
             Console.ResetColor();
-            Console.WriteLine("1 - Cadastrar Produto");
-            Console.WriteLine("2 - Realizar Venda");
-            Console.WriteLine("3 - Consultar Produto");
-            Console.WriteLine("4 - Excluir Produto");
-            Console.WriteLine("5 - Relatorio de Vendas");
-            Console.WriteLine("0 - Sair");
 
-            Console.WriteLine("Escolha uma opção: ");
+            Console.WriteLine("║                                                                        ║");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("║   [1] Cadastrar Produto                                                ║");
+            Console.WriteLine("║   [2] Realizar Venda                                                   ║");
+            Console.WriteLine("║   [3] Consultar Produto                                                ║");
+            Console.WriteLine("║   [4] Excluir Produto                                                  ║");
+            Console.WriteLine("║   [5] Relatório de Vendas                                              ║");
+            Console.WriteLine("║   [0] Sair                                                             ║");
+            Console.ResetColor();
+            Console.WriteLine("║                                                                        ║");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("╚════════════════════════════════════════════════════════════════════════╝");
+            Console.ResetColor();
+            Console.Write("\nEscolha uma opção: ");
             string opcao = Console.ReadLine();
+
 
             switch (opcao)
             {
