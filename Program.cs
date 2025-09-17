@@ -156,9 +156,9 @@ class Program
 
         decimal preco;
         Console.Write("Digite o valor (ex: 19,99): ");
-        while (!decimal.TryParse(Console.ReadLine(), NumberStyles.Any, CultureInfo.CurrentCulture, out valor) || valor < 0)
+        while (!decimal.TryParse(Console.ReadLine(), NumberStyles.Any, CultureInfo.CurrentCulture, out preco) || preco < 0)
         {
-            Console.WriteLine("Valor inválido. Por favor, digite um número positivo (use a vírgula como separador).");
+            Console.WriteLine("Valor inválido. Por favor, é necessário digitar um número positivo (use a vírgula como separador).");
             Console.Write("Digite o valor: ");
         }
 
