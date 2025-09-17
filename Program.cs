@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Principal;
+using System.Net;
+using System.Globalization;
 
 class Program
 {
@@ -14,7 +17,16 @@ class Program
         public string Nome;
         public string Categoria;
         public int Quantidade;
-        public double Preco;
+        public decimal Preco;
+
+        public Produto(int id; string nome; string categoria; int quantidade; decimal preco) 
+        {
+            Id = id;
+            Nome = nome;
+            Categoria = categoria;
+            Quantidade = quantidade;
+            Preco = preco;
+        }
     }
 
     public struct Venda
@@ -61,7 +73,7 @@ class Program
             p.Nome = partes[1];
             p.Categoria = partes[2];
             p.Quantidade = int.Parse(partes[3]);
-            p.Preco = double.Parse(partes[4]);
+            p.Preco = decimal.Parse(partes[4]);
             produtos.Add(p);
         }
         return produtos;
@@ -103,7 +115,61 @@ class Program
 
 //              CAMADA DE LÓGICA
 //              MANIPULAAÇÃO DE PRODUTOS
-    public static void CadastrarProduto() { }
+    public static void CadastrarProduto() 
+    {
+        Console.WriteLine("\n--- Adicionando Novo Produto ---");
+        int id;
+        Console.Write("Digite o Id do produto: ");
+        while (!int.TryParse(Console.ReadLine(), out id) || id < 0) //Valida se o valor é um int
+    {
+        Console.WriteLine("Id inválido. Por favor, é necessário digitar um número inteiro positivo.");
+        Console.Write("Digite novamente o Id: ");
+    }
+
+        Console.Write("Digite o nome do produto: ");
+        string nome = Console.ReadLine();
+
+        while (string.IsNullOrWhiteSpace(nome)) //Valida se o valor é nulo
+        {
+            Console.WriteLine("Nome inválido!");
+            Console.Write("Digite novamente o nome do produto: ");
+            nome = Console.ReadLine();
+        }
+
+        Console.Write("Digite a categoria do produto: ");
+        string categoria = Console.ReadLine();
+
+        while (string.IsNullOrWhiteSpace(categoria)) 
+        {
+            Console.WriteLine("Categoria inválida!.");
+            Console.Write("Digite novamente a categoria do produto: ");
+            nome = Console.ReadLine();
+        }
+
+        int quantidade;
+        Console.Write("Digite a quantidade: ");
+        while (!int.TryParse(Console.ReadLine(), out quantidade) || quantidade < 0) 
+        {
+            Console.WriteLine("Quantidade inválida. Por favor, é necessário digitar um número inteiro positivo!");
+            Console.Write("Digite novamente a quantidade: ");
+        }
+
+        decimal preco;
+        Console.Write("Digite o valor (ex: 19,99): ");
+        while (!decimal.TryParse(Console.ReadLine(), NumberStyles.Any, CultureInfo.CurrentCulture, out valor) || valor < 0)
+        {
+            Console.WriteLine("Valor inválido. Por favor, digite um número positivo (use a vírgula como separador).");
+            Console.Write("Digite o valor: ");
+        }
+
+        Produto novoProduto = new Produto(id; nome; categoria; quantidade; preco)
+     
+        produtos.Add(novoProduto);
+
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("Produto adicionado com sucesso!");
+        Console.ResetColor();
+    }
 
     public static List<Produto> ConsultarProdutos() { }
 
