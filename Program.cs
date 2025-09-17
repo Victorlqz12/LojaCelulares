@@ -116,8 +116,24 @@ class Program
     }
 
 
-//              CAMADA DE LÓGICA
-//              MANIPULAAÇÃO DE PRODUTOS
+    //              CAMADA DE LÓGICA
+    //              MANIPULAAÇÃO DE PRODUTOS
+    private static string LerEntrada(string prompt) //Método auxiliar para cancelar operações
+    {
+        Console.Write(prompt);
+        string input = Console.ReadLine();
+
+        if (input.ToLower().Trim() == "cancelar")
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\nOperação cancelada pelo usuário.");
+            Console.ResetColor();
+            Console.WriteLine("Pressione qualquer tecla para continuar...");
+            Console.ReadKey();
+            return null;
+        }
+        return input;
+    }
     public static void CadastrarProduto() 
     {
         Console.Clear();
@@ -125,58 +141,81 @@ class Program
         Console.WriteLine("╔════════════════════════════════════════════════════════════════════════╗");
         Console.WriteLine("║                        LOJA CELULARXPRESS                              ║");
         Console.WriteLine("║                        Cadastro de Produto                             ║");
+        Console.WriteLine("║                                                                        ║");
+        Console.WriteLine("║       Digite cancelar a qualquer momento para voltar ao menu           ║");
+        Console.WriteLine("║                                                                        ║");
         Console.WriteLine("╠════════════════════════════════════════════════════════════════════════╣");
         Console.ResetColor();
 
-        Console.Write("\n  Digite o Id do produto: ");
-        int id;        
-        while (!int.TryParse(Console.ReadLine(), out id) || id < 0) //Valida se o valor é um int
-    {
-        Console.WriteLine("Id inválido. Por favor, é necessário digitar um número inteiro positivo.");
-        Console.Write("Digite novamente o Id: ");
-    }
+        string input;
 
-        Console.Write("Digite o nome do produto: ");
-        string nome = Console.ReadLine();
-
-        while (string.IsNullOrWhiteSpace(nome)) //Valida se o valor é nulo
+        int id;
+        while (true) //Loop para garantir que só irá dar continuidade com uma entrada válida ou com cancelamento
         {
-            Console.WriteLine("Nome inválido!");
-            Console.Write("Digite novamente o nome do produto: ");
-            nome = Console.ReadLine();
+            input = LerEntrada(" Digite o Id do produto: ");
+            if (input == null) return;
+
+            if (int.TryParse(input, out id) && id >= 0) //Caso a entrada seja válida
+            {
+                break;
+            }
+            Console.WriteLine(" Id inválido. Por favor, é necessário digitar um número inteiro positivo.");
         }
-
-        Console.Write("Digite a categoria do produto: ");
-        string categoria = Console.ReadLine();
-
-        while (string.IsNullOrWhiteSpace(categoria)) 
+        string nome;
+        while (true)
         {
-            Console.WriteLine("Categoria inválida!.");
-            Console.Write("Digite novamente a categoria do produto: ");
-            categoria = Console.ReadLine();
-        }
+            nome = LerEntrada(" Digite o nome do produto: ");
+            if (nome == null) return;
 
+            if (!string.IsNullOrWhiteSpace(nome))
+            {
+                break; 
+            }
+            Console.WriteLine(" Nome inválido!");
+        }
+        string categoria;
+        while (true)
+        {
+            categoria = LerEntrada(" Digite a categoria do produto: ");
+            if (categoria == null) return;
+
+            if (!string.IsNullOrWhiteSpace(categoria))
+            {
+                break;  
+            }
+            Console.WriteLine(" Categoria inválida!");
+        }
         int quantidade;
-        Console.Write("Digite a quantidade: ");
-        while (!int.TryParse(Console.ReadLine(), out quantidade) || quantidade < 0) 
+        while (true) 
         {
-            Console.WriteLine("Quantidade inválida. Por favor, é necessário digitar um número inteiro positivo!");
-            Console.Write("Digite novamente a quantidade: ");
+            input = LerEntrada(" Digite a quantidade de produtos: ");
+            if (input == null) return; 
+
+            if (int.TryParse(input, out quantidade) && quantidade >= 0)
+            {
+                break; 
+            }
+            Console.WriteLine(" Quantidade inválida. Por favor, é necessário digitar um número inteiro positivo.");
         }
 
         decimal preco;
-        Console.Write("Digite o valor (ex: 19,99): ");
-        while (!decimal.TryParse(Console.ReadLine(), NumberStyles.Any, CultureInfo.CurrentCulture, out preco) || preco < 0)
+        while (true)
         {
-            Console.WriteLine("Valor inválido. Por favor, é necessário digitar um número positivo (use a vírgula como separador).");
-            Console.Write("Digite o valor: ");
+            input = LerEntrada(" Digite o valor (ex: 19,99): ");
+            if (input == null) return;
+
+            if (decimal.TryParse(input, NumberStyles.Any, CultureInfo.CurrentCulture, out preco) && preco >= 0)
+            {
+                break;
+            }
+            Console.WriteLine(" Valor inválido. Por favor, é necessário digitar um número positivo.");
         }
 
         Produto novoProduto = new Produto(id, nome, categoria, quantidade, preco);
         produtos.Add(novoProduto);
 
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Produto adicionado com sucesso!");
+        Console.WriteLine(" Produto adicionado com sucesso!");
         Console.ResetColor();
         SalvarProdutos();
     }
