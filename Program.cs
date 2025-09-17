@@ -19,7 +19,7 @@ class Program
         public int Quantidade;
         public decimal Preco;
 
-        public Produto(int id; string nome; string categoria; int quantidade; decimal preco) 
+        public Produto(int id, string nome, string categoria, int quantidade, decimal preco) 
         {
             Id = id;
             Nome = nome;
@@ -62,30 +62,31 @@ class Program
     {
         List<Produto> produtos = new List<Produto>();
 
-        if (File.Exists("Data/produtos.txt"))
+        if (!File.Exists("Data/produtos.txt"))
             return produtos;
 
         foreach (var linha in File.ReadAllLines("Data/produtos.txt"))
         {
             var partes = linha.Split(';');
-            Produto p;
-            p.Id = int.Parse(partes[0]);
-            p.Nome = partes[1];
-            p.Categoria = partes[2];
-            p.Quantidade = int.Parse(partes[3]);
-            p.Preco = decimal.Parse(partes[4]);
-            produtos.Add(p);
+            Produto p = new Produto(
+                int.Parse(partes[0]),
+                partes[1],
+                partes[2],
+                int.Parse(partes[3]),
+                decimal.Parse(partes[4])
+            );
         }
-        return produtos;
+        produtos.Add(p);
     }
     //              SALVAR VENDAS
-    public static void SalvarVendas()
+    public static void SalvarVendas(List<Venda> vendas)
     {
+        Directory.CreateDirectory("Data");
         using (StreamWriter sw = new StreamWriter("Data/vendas.txt"))
         {
-            foreach (var p in produtos)
+            foreach (var v in vendas)
             {
-                sw.WriteLine($"{p.IdVenda};{p.NomeProduto};{p.Categoria};{p.QuantidadeVendida};{p.ValorTotal};{p.DataVenda}");
+                sw.WriteLine($"{v.IdVenda};{v.NomeProduto};{v.Categoria};{v.QuantidadeVendida};{v.ValorTotal};{v.DataVenda}");
             }
         }
     }
@@ -94,22 +95,22 @@ class Program
     {
         List<Venda> vendas = new List<Venda>();
 
-        if (File.Exists("Data/vendas.txt"))
+        if (!File.Exists("Data/vendas.txt"))
             return vendas;
 
         foreach (var linha in File.ReadAllLines("Data/produtos.txt"))
         {
             var partes = linha.Split(';');
-            Venda p;
-            p.IdVenda = int.Parse(partes[0]);
-            p.NomeProduto = partes[1];
-            p.Categoria = partes[2];
-            p.QuantidadeVendida = int.Parse(partes[3]);
-            p.ValorTotal = double.Parse(partes[4]);
-            p.DataVenda = DateTime.Parse(partes[5]);
-            produtos.Add(p);
+            Venda v = new Venda();
+            v.IdVenda = int.Parse(partes[0]);
+            v.NomeProduto = partes[1];
+            v.Categoria = partes[2];
+            v.QuantidadeVendida = int.Parse(partes[3]);
+            v.ValorTotal = double.Parse(partes[4]);
+            v.DataVenda = DateTime.Parse(partes[5]);
+            produtos.Add(v);
         }
-        return produtos;
+        return vendas;
     }
 
 
@@ -162,7 +163,7 @@ class Program
             Console.Write("Digite o valor: ");
         }
 
-        Produto novoProduto = new Produto(id; nome; categoria; quantidade; preco)
+        Produto novoProduto = new Produto(id, nome, categoria, quantidade, preco)
      
         produtos.Add(novoProduto);
 
@@ -202,7 +203,7 @@ class Program
 
             switch (opcao)
             {
-                case "1": /* CadastrarProduto(produtos) */ break;
+                case "1": CadastrarProduto(produtos); break;
                 case "2": /* RealizarVenda(produtos, vendas) */ break;
                 case "3": /* ConsultarProduto(produtos) */ break;
                 case "4": /* ExcluirProduto(produtos) */ break;
