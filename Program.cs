@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Principal;
 using System.Net;
-using System.Globalization;
+using System.Globalization; 
 
 class Program
 {
@@ -258,12 +258,12 @@ class Program
             Console.ResetColor();
             return;
         }
-
+        
         
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("╔════╦══════════════════════════════════════╦════════════════╦════════════╦═════════════════╗");
-        Console.WriteLine("║ ID ║ Nome                                 ║ Categoria      ║ Quantidade ║ Preço           ║");
-        Console.WriteLine("╠════╬══════════════════════════════════════╬════════════════╬════════════╬═════════════════╣");
+        Console.WriteLine("╔════╦══════════════════════════════════════╦════════════════╦════════════╦═══════════════════╗");
+        Console.WriteLine("║ ID ║ Nome                                 ║ Categoria      ║ Quantidade ║ Preço             ║");
+        Console.WriteLine("╠════╬══════════════════════════════════════╬════════════════╬════════════╬═══════════════════╣");
         Console.ResetColor();
 
         
@@ -271,14 +271,14 @@ class Program
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(
-                $"║ {p.Id,-2} ║ {p.Nome,-36} ║ {p.Categoria,-14} ║ {p.Quantidade,-10} ║ {p.Preco,8:C}     ║"                        
+                $"║ {p.Id,-2} ║ {p.Nome,-36} ║ {p.Categoria,-14} ║ {p.Quantidade,-10} ║ {p.Preco,11:C}       ║"                        
             );
             Console.ResetColor();
         }
 
         
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("╚════╩══════════════════════════════════════╩════════════════╩════════════╩═════════════════╝");
+        Console.WriteLine("╚════╩══════════════════════════════════════╩════════════════╩════════════╩═══════════════════╝");
         Console.ResetColor();
 
         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -317,7 +317,7 @@ class Program
         }
         else
         {
-            Console.ForegroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.Red; 
             Console.WriteLine("\n    Produto não encontrado.");
             Console.ResetColor();
         }
@@ -425,7 +425,7 @@ class Program
         foreach (var v in vendas)
         {
             Console.WriteLine(
-                $" {v.IdVenda,-2}  {v.NomeProduto,-40}  {v.Categoria,-18}    {v.QuantidadeVendida,-10}    {v.ValorTotal,10:C}    {v.DataVenda,-18} "
+                $" {v.IdVenda,-2}  {v.NomeProduto,-40}  {v.Categoria,-15}    {v.QuantidadeVendida,-10}    {v.ValorTotal,10:C}    {v.DataVenda,-18} "
                 
             );
         }
